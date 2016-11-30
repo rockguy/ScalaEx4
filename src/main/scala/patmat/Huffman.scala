@@ -76,7 +76,7 @@ object Huffman {
    */
     def times(chars: List[Char]): List[(Char, Int)] =
     {
-      var ListChars:List[(Char, Int)]
+      val ListChars: List[(Char, Int)] = null
 
       if (!chars.isEmpty){checkChar(chars.head,ListChars);times(chars.tail)}
       def checkChar(char:Char,list:List[(Char, Int)]): Int =
@@ -94,11 +94,10 @@ object Huffman {
    * голова списка должна иметь наименьший вес), где вес узла - есть частота символа.
    */
     def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = {
-      freqs.sortBy(_._2)
-      var Leafs:List[Leaf]
-      return convert(freqs,Leafs)
-      def convert(freqs: List[(Char, Int)], Leafs: List[Leaf]): List[Leaf] = {
-        new Leaf(freqs.head._1, freqs.head._2) :: convert(freqs.tail, Leafs)
+      val newFreqs=freqs.sortBy(_._2)
+      convert(newFreqs)
+      def convert(freqs: List[(Char, Int)]): List[Leaf] = {
+        new Leaf(freqs.head._1, freqs.head._2) :: convert(freqs.tail)
       }
     }
   
