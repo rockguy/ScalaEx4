@@ -20,7 +20,7 @@ object Huffman {
   abstract class CodeTree
   case class Fork(left: CodeTree, right: CodeTree, chars: List[Char], weight: Int) extends CodeTree
   case class Leaf(char: Char, weight: Int) extends CodeTree
-  
+
 
   // Часть 1: Базовая
   def weight(tree: CodeTree): Int = tree match {
@@ -74,7 +74,18 @@ object Huffman {
    *       println("integer is  : "+ theInt)
    *   }
    */
-    def times(chars: List[Char]): List[(Char, Int)] = ???
+    def times(chars: List[Char]): List[(Char, Int)] =
+    {
+      var ListChars:List[(Char, Int)]
+
+      if (!chars.isEmpty){checkChar(chars.head,ListChars);times(chars.tail)}
+      def checkChar(char:Char,list:List[(Char, Int)]): Int =
+      {
+           if(ListChars.head._1==char){ListChars.head._2+1}
+        else{ checkChar(char,list.tail)}
+      }
+      ListChars
+    }
   
   /**
    * Возвращает список узлов `Leaf` по заданной таблице частотности `freqs`.
@@ -82,12 +93,19 @@ object Huffman {
    * Возвращает список, который должен быть упорядочен по возрастанию весов (т.е.
    * голова списка должна иметь наименьший вес), где вес узла - есть частота символа.
    */
-    def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = ???
+    def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = {
+      freqs.sortBy(_._2)
+      var Leafs:List[Leaf]
+      return convert(freqs,Leafs)
+      def convert(freqs: List[(Char, Int)], Leafs: List[Leaf]): List[Leaf] = {
+        new Leaf(freqs.head._1, freqs.head._2) :: convert(freqs.tail, Leafs)
+      }
+    }
   
   /**
    * Проверяет, содержит ли список `trees` только одно кодовое дерево.
    */
-    def singleton(trees: List[CodeTree]): Boolean = ???
+    def singleton(trees: List[CodeTree]): Boolean = if(trees.length==1) true else false
   
   /**
    * Параметр `trees` этой функции - список деревьев кода, упорядоченных по возрастанию весов.
@@ -98,7 +116,17 @@ object Huffman {
    *
    * Если `trees` является списком, меньше чем из двух элементов, список дожен вернуться неизменным
    */
-    def combine(trees: List[CodeTree]): List[CodeTree] = ???
+    def combine(trees: List[CodeTree]): List[CodeTree] = {
+      match trees {
+        case x::xt => x::xt
+        case x1::x2::xt=>{
+          match(x1,x2){
+            case (Leaf,Leaf)=>{new Fork(x1,x2,chars(x1)::chars(x2),weight(x1)+weight(x2))}
+          }
+
+        }
+      }
+    }
   
   /**
    * Эта функция будет вызвана следующим образом:
@@ -117,7 +145,7 @@ object Huffman {
    *    Еще определите тип возвращаемого значения функции `until`.
    *  - постарайтесь подобрать значимые имена параметров для `xxx`, `yyy` и `zzz`.
    */
-    def until(xxx: ???, yyy: ???)(zzz: ???): ??? = ???
+    def until(xxx: ???, yyy: List[CodeTree])(zzz: ???): ??? = ???
   
   /**
    * ЭТа функция создает дерева кода , оптимальное для кодирования текста `chars`.
