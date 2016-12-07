@@ -104,7 +104,7 @@ object Huffman {
   /**
    * Проверяет, содержит ли список `trees` только одно кодовое дерево.
    */
-    def singleton(trees: List[CodeTree]): Boolean = if(trees.length==1) true else false
+    def singleton(trees: List[CodeTree]): Boolean = (trees.length==1)
   
   /**
    * Параметр `trees` этой функции - список деревьев кода, упорядоченных по возрастанию весов.
@@ -116,16 +116,25 @@ object Huffman {
    * Если `trees` является списком, меньше чем из двух элементов, список дожен вернуться неизменным
    */
     def combine(trees: List[CodeTree]): List[CodeTree] = {
-      match trees {
-        case x::xt => x::xt
-        case x1::x2::xt=>{
-          match(x1,x2){
-            case (Leaf,Leaf)=>{new Fork(x1,x2,chars(x1)::chars(x2),weight(x1)+weight(x2))}
-          }
 
+      if (trees.length < 3) trees
+      else {
+        val forkNode = makeCodeTree(trees.head, trees.tail.head)
+        val newTrees = trees.drop(2)
+        combine0(forkNode, newTrees)
+      }
+
+      def combine0(forkNode: Fork, bigTrees: List[CodeTree]): List[CodeTree] = {
+        if (weight(forkNode) < weight(bigTrees.head)) {
+          val newTree = forkNode :: bigTrees
+          newTree
+        } else {
+          val newTree = bigTrees.head :: combine0(forkNode, bigTrees.tail)
+          newTree
         }
       }
     }
+
   
   /**
    * Эта функция будет вызвана следующим образом:
@@ -144,7 +153,11 @@ object Huffman {
    *    Еще определите тип возвращаемого значения функции `until`.
    *  - постарайтесь подобрать значимые имена параметров для `xxx`, `yyy` и `zzz`.
    */
-    def until(xxx: ???, yyy: List[CodeTree])(zzz: ???): ??? = ???
+    def until(singleton: List[CodeTree] => Boolean, combine: List[CodeTree] => List[CodeTree])(tree: List[CodeTree]): List[CodeTree] = {
+      if (tree.isEmpty) tree
+      else if (singleton(tree)) tree
+      else until(singleton, combine)(combine(tree))
+    }
   
   /**
    * ЭТа функция создает дерева кода , оптимальное для кодирования текста `chars`.
@@ -152,7 +165,14 @@ object Huffman {
    * Параметр `chars` произвольный текст. Эта функция извлекает последовательность символов из текста и создает дерево кода
    * базирующегося на нем.
    */
-    def createCodeTree(chars: List[Char]): CodeTree = ???
+    def createCodeTree(chars: List[Char]): CodeTree = {
+      if (chars.isEmpty) null
+      else{
+        val list = until(singleton, combine)(makeOrderedLeafList(times(chars)))
+        val tree = list.head
+        tree
+      }
+    }
   
 
   // Часть 3: Декодирование
@@ -163,7 +183,22 @@ object Huffman {
    * Эта функция декодирует последовательность битов `bits`, используя дерево кодов `tree` и возвращает
    * результирующий список символов.
    */
-    def decode(tree: CodeTree, bits: List[Bit]): List[Char] = ???
+    def decode(tree: CodeTree, bits: List[Bit]): List[Char] = decode0(tree,bits,tree)
+
+  def decode0(tree: CodeTree, bits: List[Bit],node:CodeTree):List[Char]={
+    node match{
+      case (Leaf(c, _)) => c :: decode0(tree,bits.tail,tree)
+      case (Fork(left,right,_,_)) =>
+        if (bits.isEmpty)
+          List()
+        else if (bits.head==0)
+          decode0(tree,bits,left)
+        else
+          decode0(tree,bits,right)
+
+      }
+    }
+
   
   /**
    * Дерево кодирования Хафмана для Французского языка.
@@ -181,7 +216,7 @@ object Huffman {
   /**
    * Напишите функцию, которая возвращает декодированный секрет
    */
-    def decodedSecret: List[Char] = ???
+    def decodedSecret: List[Char] = decode(frenchCode,secret)
   
 
   // Часть 4a: Кодирование с использованием дерева Хафмана
@@ -190,7 +225,22 @@ object Huffman {
    * ЭТа функция кодирует `text` с помощью кодового дерева `tree` в
    * последовательность битов.
    */
-    def encode(tree: CodeTree)(text: List[Char]): List[Bit] = ???
+    def encode(tree: CodeTree)(text: List[Char]): List[Bit] = {
+      encode0(tree,text.head):::encode(tree)(text.tail)
+    }
+
+  def encode0(tree: CodeTree,text: Char): List[Bit] = {
+    tree match {
+      case (Leaf(_, _)) => Nil
+      case (Fork(left, right, chars0, _)) => {
+        if (chars(left).contains(text))
+          0 :: encode0(left, text)
+        else if (chars(right).contains(text))
+          1 :: encode0(right, text)
+        else Nil
+      }
+    }
+  }
   
   // Часть 4b: Кодирование, использующее таблицу
 
@@ -200,7 +250,13 @@ object Huffman {
    * ЭТа функция возвращает последовательность битов, представляющая символ `char` в
    * кодовую таблицу `table`.
    */
-    def codeBits(table: CodeTable)(char: Char): List[Bit] = ???
+    def codeBits(table: CodeTable)(char: Char): List[Bit] = {
+      try {
+        if (table.head._1 == char) table.head._2 else codeBits(table.tail)(char)
+      }
+      catch Nil
+
+    }
   
   /**
    * Имя кодовое дерево, создайте кодовую таблицу, которая содержит, для каждого символа в
