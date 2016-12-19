@@ -1,0 +1,22 @@
+[0m[[0mdebug[0m] [0mForking tests - parallelism = false[0m
+[0m[[31merror[0m] [0mCould not accept connection from test agent: class java.net.SocketException: socket closed[0m
+java.net.SocketException: socket closed
+	at java.net.DualStackPlainSocketImpl.accept0(Native Method)
+	at java.net.DualStackPlainSocketImpl.socketAccept(Unknown Source)
+	at java.net.AbstractPlainSocketImpl.accept(Unknown Source)
+	at java.net.PlainSocketImpl.accept(Unknown Source)
+	at java.net.ServerSocket.implAccept(Unknown Source)
+	at java.net.ServerSocket.accept(Unknown Source)
+	at sbt.ForkTests$$anonfun$mainTestTask$1$Acceptor$2$.run(ForkTests.scala:46)
+	at java.lang.Thread.run(Unknown Source)
+[0m[[0mdebug[0m] [0mSummary for ScalaCheck not available.[0m
+[0m[[0minfo[0m] [0mScalaTest[0m
+[0m[[0minfo[0m] [0m[36mRun completed in 10 seconds, 196 milliseconds.[0m[0m
+[0m[[0minfo[0m] [0m[36mTotal number of tests run: 0[0m[0m
+[0m[[0minfo[0m] [0m[36mSuites: completed 0, aborted 0[0m[0m
+[0m[[0minfo[0m] [0m[36mTests: succeeded 0, failed 0, canceled 0, ignored 0, pending 0[0m[0m
+[0m[[0minfo[0m] [0m[33mNo tests were executed.[0m[0m
+[0m[[31merror[0m] [0mError: Total 0, Failed 0, Errors 0, Passed 0[0m
+[0m[[31merror[0m] [0mError during tests:[0m
+[0m[[31merror[0m] [0m	Running java with options -classpath D:\Downloads\patmat\patmat\ScalaEx4\target\scala-2.11\test-classes;D:\Downloads\patmat\patmat\ScalaEx4\target\scala-2.11\classes;D:\Downloads\patmat\patmat\ScalaEx4\lib\cafesat_2.11-0.01.jar;C:\Users\rockguy\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.11.5.jar;C:\Users\rockguy\.ivy2\cache\org.scalacheck\scalacheck_2.11\jars\scalacheck_2.11-1.12.1.jar;C:\Users\rockguy\.ivy2\cache\org.scala-lang.modules\scala-parser-combinators_2.11\bundles\scala-parser-combinators_2.11-1.0.4.jar;C:\Users\rockguy\.ivy2\cache\org.scala-sbt\test-interface\jars\test-interface-1.0.jar;C:\Users\rockguy\.ivy2\cache\ch.epfl.lamp\scala-grading-runtime_2.11\jars\scala-grading-runtime_2.11-0.2.jar;C:\Users\rockguy\.ivy2\cache\org.scalatest\scalatest_2.11\bundles\scalatest_2.11-2.2.4.jar;C:\Users\rockguy\.ivy2\cache\org.scala-lang\scala-reflect\jars\scala-reflect-2.11.2.jar;C:\Users\rockguy\.ivy2\cache\org.scala-lang.modules\scala-xml_2.11\bundles\scala-xml_2.11-1.0.2.jar;C:\Users\rockguy\.ivy2\cache\junit\junit\jars\junit-4.10.jar;C:\Users\rockguy\.ivy2\cache\org.hamcrest\hamcrest-core\jars\hamcrest-core-1.1.jar;C:\Users\rockguy\.sbt\boot\scala-2.10.4\org.scala-sbt\sbt\0.13.7\test-agent-0.13.7.jar;C:\Users\rockguy\.sbt\boot\scala-2.10.4\org.scala-sbt\sbt\0.13.7\test-interface-1.0.jar sbt.ForkMain 51656 failed with exit code 1[0m
+[0m[[31merror[0m] [0m(assignment/test:[31mtest[0m) sbt.TestsFailedException: Tests unsuccessful[0m
